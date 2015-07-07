@@ -24,6 +24,21 @@ window.findNRooksSolution = function(n) {
         // if piece placed is === to n solution found
         // otherwise recursive call to place pieces function with updated board 
 
+  var board = new Board({n:n});
+  var placePiece = function(board){
+    var rows = board.rows();
+    for(var i = 0; i < rows.length; i++){
+      for(var x = 0; x < rows.length; i++){
+        if(rows[i][x] !== 1){
+          board.togglePiece(i,x);
+          if(!board.hasAnyRowConflicts() && !board.hasAnyColConflicts()){
+            
+          }
+        }
+      }
+    }
+  };
+
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };

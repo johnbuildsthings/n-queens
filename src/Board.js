@@ -145,6 +145,9 @@
       for(var i=0;i<rows.length;i++){
         if(rows[i][startingCol] === 1){
           var y = i+1;
+          if(y >= rows.length){
+            break;
+          }
           for(var x=startingCol+1; x<rows.length; x++){
             if(rows[y][x] === 1){
               hasDiagonal = true;
@@ -186,6 +189,9 @@
       for(var i=0; i<rows.length; i++){
         if(rows[i][startingCol] === 1){
           var y = i+1;
+          if(y >= rows.length){
+            break;
+          }
           for(var x=startingCol-1; x>=0; x--){
             if(rows[y][x] === 1){
               hasDiagonal = true;
