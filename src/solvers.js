@@ -100,7 +100,28 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+
+  var queensTree = generateQueensTree(n);
+  
+  var solution = [];
+  var tempArray = [];
+  var traverse = function(tree){
+    tempArray.push([tree.depth, tree.value]);
+    if(tree.children.length > 0){
+      for(var i = 0; i<tree.children.length; i++){
+        traverse(tree.children[i]);
+      }
+    } else {
+      if(tree.depth === n){
+        solution.push(tempArray);
+      }
+      tempArray = []; 
+    }
+  }
+  traverse(queensTree);
+
+  //hasAnyQueensConflicts
+  for(var i = 0; i < solutions.le)
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
@@ -109,7 +130,26 @@ window.findNQueensSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0; //fixme
+  var queensTree = generateQueensTree(n);
+  
+  var solutionArray = [];
+  var tempArray = [];
+  var traverse = function(tree){
+    tempArray.push([tree.depth, tree.value]);
+    if(tree.children.length > 0){
+      for(var i = 0; i<tree.children.length; i++){
+        traverse(tree.children[i]);
+      }
+    } else {
+      if(tree.depth === n){
+        solutionArray.push(tempArray);
+        solutionCount++;
+      }
+      tempArray = []; 
+    }
+  }
+  traverse(queensTree);
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
@@ -152,4 +192,48 @@ window.generateRooksTree = function(n){
   }
 
   return rookTree;
+}
+
+window.generateQueensTree = function(n){
+  var Tree = function(value, colArray){
+    var newTree = {};
+    newTree.value = value;
+    newTree.colArray = colArray;
+    newTree.children = [];
+    newTree.depth = 0;
+    
+    return newTree;
+  }
+
+
+  var buildTree = function(tree){
+    if(tree.children.length !== 0){
+      for(var i=0;i<tree.children.length;i++){
+        buildTree(tree.children[i]);
+
+      }
+    }else{
+      for(var i=0;i<tree.colArray.length;i++){
+        if(tree.colArray[i] !== null && tree.colArray[i] !== tree.value+1 && tree.colArray[i] !== tree.value-1){
+          var newColArray = tree.colArray.slice(0);
+          newColArray[i] = null;
+          var newChild = Tree(tree.colArray[i], newColArray);
+          newChild.depth = tree.depth+1;
+          tree.children.push(newChild);
+        }
+
+      }
+    }
+  }
+
+  var colArray = [];
+  for(var i=0;i<n;i++){
+    colArray.push(i);
+  }
+  var queenTree = Tree(undefined, colArray);
+  for(var i=0;i<n;i++){
+    buildTree(queenTree);
+  }
+
+  return queenTree;
 }
