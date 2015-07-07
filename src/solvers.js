@@ -15,6 +15,14 @@
 
 window.findNRooksSolution = function(n) {
   var solution = undefined; //fixme
+  // make new empty board of size n
+    // create place piece function to place peices on board
+      // loop through matrix to find empty place
+      // place piece if space is empty
+      // run col and row conflict checks
+        // if tests pass 
+        // if piece placed is === to n solution found
+        // otherwise recursive call to place pieces function with updated board 
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
