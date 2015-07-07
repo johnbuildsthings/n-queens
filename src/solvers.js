@@ -26,26 +26,32 @@ window.findNRooksSolution = function(n) {
 
   var board = new Board({n:n});
   var placedPieces = 0;
+  var solutionMatrix;
 
   var placePiece = function(board){
     var rows = board.rows();
     for(var i = 0; i < rows.length; i++){
-      for(var x = 0; x < rows.length; i++){
+      for(var x = 0; x < rows.length; x++){
         if(rows[i][x] !== 1){
           board.togglePiece(i,x);
           if(!board.hasAnyRowConflicts() && !board.hasAnyColConflicts()){
             placedPieces++;
             if(placedPieces === n){
-              return board.rows();
+              solutionMatrix = board.rows();
             } else{
               placePiece(board);
             }
+          } else{
+            board.togglePiece(i, x);
           }
+          
         }
       }
     }
   };
-  solution = placePiece(board);
+  placePiece(board);
+  solution = solutionMatrix;
+  console.log(solution);
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
