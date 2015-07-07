@@ -79,33 +79,20 @@ window.findNRooksSolution = function(n, startTuple) {
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
   var solutionCount = 0; //fixme
-  var solutions = [];
-  for(var i=0;i<n;i++){
-    for(var y=0;y<n;y++){
-      var solution = findNRooksSolution(n, [i,y]);
-      if(solution !== undefined){
+  
+  var rookTree = generateRooksTree(n);
+  // console.log(rookTree);
 
-        var solutionFound = false;
-        var flattened = solution.reduce(function(a, b) {
-          return a.concat(b);
-        });
-        flattened = flattened.join('');
-
-        for(var j=0;j<solutions.length;j++){        
-          if(flattened === solutions[j]){
-            solutionFound = true;
-          }
-        }
-        if(!solutionFound){
-          solutions.push(flattened);
-          solutionCount++;
-        }
-        
+  var traverse = function(tree){
+    if(tree.children.length > 0){
+      for(var i = 0; i<tree.children.length; i++){
+        traverse(tree.children[i]);
       }
+    } else {
+      solutionCount++;
     }
   }
-
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  traverse(rookTree);
   return solutionCount;
 };
 
@@ -127,3 +114,42 @@ window.countNQueensSolutions = function(n) {
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
+
+
+window.generateRooksTree = function(n){
+  var Tree = function(value, colArray){
+    var newTree = {};
+    newTree.value = value;
+    newTree.colArray = colArray;
+    newTree.children = [];
+    
+    return newTree;
+  }
+
+  var buildTree = function(tree){
+    if(tree.children.length !== 0){
+      for(var i=0;i<tree.children.length;i++){
+        buildTree(tree.children[i]);
+      }
+    }else{
+      //
+      for(var i=0;i<tree.colArray.length;i++){
+        var newColArray = tree.colArray.slice(0);
+        newColArray.splice(i, 1);
+        var newChild = Tree(tree.colArray[i], newColArray);
+        tree.children.push(newChild);
+      }
+    }
+  }
+
+  var colArray = [];
+  for(var i=0;i<n;i++){
+    colArray.push(i);
+  }
+  var rookTree = Tree(null, colArray);
+  for(var i=0;i<n;i++){
+    buildTree(rookTree);
+  }
+
+  return rookTree;
+}
