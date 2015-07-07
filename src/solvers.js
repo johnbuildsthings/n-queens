@@ -28,6 +28,7 @@ window.findNRooksSolution = function(n, startTuple) {
   
   var placedPieces = 0;
   var solutionMatrix;
+  var totalSolutions = 0;
 
   var placePiece = function(board, firstPlacement){
     var rows = board.rows();
@@ -47,6 +48,7 @@ window.findNRooksSolution = function(n, startTuple) {
             if(!board.hasAnyRowConflicts() && !board.hasAnyColConflicts()){
               placedPieces++;
               if(placedPieces === n){
+                totalSolutions++;
                 solutionMatrix = board.rows();
               } else{
                 placePiece(board, false);
@@ -66,6 +68,7 @@ window.findNRooksSolution = function(n, startTuple) {
   }else{
     placePiece(board, false);
   }
+  console.log("Found " + totalSolutions + " solutions...only returning 1");
   solution = solutionMatrix;
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
