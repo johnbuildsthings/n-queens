@@ -17,8 +17,7 @@ window.findSolution = function(row, test, callback, n, board){
 
   // Base case is if the row index that's passed in is n
   if(row === n){
-    callback();
-    return;
+    return callback();
   }
   //Recursive Case
   // Begins with a loop to go through each space in that row
@@ -27,7 +26,10 @@ window.findSolution = function(row, test, callback, n, board){
     //debugger;
     board.togglePiece(row, i);
     if(!(board[test]())){
-      findSolution(row+1, test, callback, n, board);
+      var result = findSolution(row+1, test, callback, n, board);
+      if(result){
+        return result;
+      }
     }
     board.togglePiece(row,i);
     
@@ -126,10 +128,14 @@ window.countNRooksSolutions = function(n) {
 window.findNQueensSolution = function(n) {
   var board = new Board({n:n});
 
-  findSolution(0, test, function(){
-    return board.rows();
-  }, n, board);
+  var solution = findSolution(0, 'hasAnyQueensConflicts', function(){
+    return _.map(board.rows(), function(row){
+      return row.slice();
+    });
+  }, n, board) || board.rows();
+  console.log(solution);
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
+  
   return solution;
 };
 
@@ -138,7 +144,6 @@ window.findNQueensSolution = function(n) {
 window.countNQueensSolutions = function(n) {
   var solutionCount = 0; //fixme
   var board = new Board({n:n});
-
   findSolution(0, 'hasAnyQueensConflicts', function(){
     solutionCount++;
   }, n, board);
